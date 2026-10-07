@@ -18,3 +18,16 @@
     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
     @enderror
 </div>
+
+<div>
+    <label for="status" class="mb-1.5 block text-sm font-medium text-zinc-700">Status</label>
+    <select id="status" name="status"
+        class="block w-full rounded-md border bg-white px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-zinc-900/10 {{ $errors->has('status') ? 'border-red-400' : 'border-zinc-300 focus:border-zinc-400' }}">
+        @foreach (['draft' => 'Draft', 'published' => 'Published'] as $value => $label)
+        <option value="{{ $value }}" @selected(old('status', $project->status ?? 'draft') === $value)>{{ $label }}</option>
+        @endforeach
+    </select>
+    @error('status')
+    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>

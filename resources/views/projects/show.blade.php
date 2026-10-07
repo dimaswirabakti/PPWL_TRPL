@@ -8,7 +8,10 @@
 </div>
 
 <article class="rounded-lg border border-zinc-200 bg-white p-6">
-    <h1 class="text-2xl font-semibold tracking-tight">{{ $project->title }}</h1>
+    <div class="flex flex-wrap items-center gap-2.5">
+        <h1 class="text-2xl font-semibold tracking-tight">{{ $project->title }}</h1>
+        @include('partials.status-badge', ['status' => $project->status])
+    </div>
     <p class="mt-1 text-xs text-zinc-400">Dibuat {{ $project->created_at->format('d M Y') }}</p>
 
     <div class="mt-4 whitespace-pre-line text-sm leading-relaxed text-zinc-700">{{ $project->description }}</div>
@@ -17,7 +20,7 @@
         <a href="{{ route('projects.edit', $project->id) }}"
             class="rounded-md border border-zinc-300 px-3 py-1.5 font-medium text-zinc-700 transition hover:bg-zinc-50">Edit</a>
         <form action="{{ route('projects.destroy', $project->id) }}" method="POST"
-            data-confirm-delete="Yakin ingin menghapus proyek ini?">
+            data-confirm-delete="Pindahkan proyek ini ke Trash?">
             @csrf
             @method('DELETE')
             <button type="submit"
