@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Pertemuan8Controller;
 use App\Http\Controllers\ProjectController;
 
 Route::get('/', fn() => view('home'))->name('home');
@@ -12,3 +13,5 @@ Route::patch('projects/{id}/restore', [ProjectController::class, 'restore'])->na
 Route::delete('projects/{id}/force', [ProjectController::class, 'forceDelete'])->name('projects.force-delete');
 
 Route::resource('projects', ProjectController::class);
+
+Route::get('pertemuan-8', [Pertemuan8Controller::class, 'index'])->name('pertemuan8.index');

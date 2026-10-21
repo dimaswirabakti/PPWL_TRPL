@@ -7,10 +7,11 @@
         <div class="flex items-center gap-1 text-sm">
             @php
             $links = [
-            'home' => 'Home',
-            'about' => 'About',
-            'education' => 'Education',
-            'projects.index' => 'Projects',
+                'home' => 'Home',
+                'about' => 'About',
+                'education' => 'Education',
+                'projects.index' => 'Projects',
+                'pertemuan8.index' => 'Lab 08',
             ];
             @endphp
 

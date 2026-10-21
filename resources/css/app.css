@@ -16,6 +16,18 @@
     --color-line: #e3dfd4;
     --color-success: #3f6212;
     --color-danger: #9f1239;
+
+    --font-lab: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    --font-lab-mono:
+        "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --color-lab-bg: #f7f7f8;
+    --color-lab-surface: #fcfcfd;
+    --color-lab-ink: #1a1a1f;
+    --color-lab-muted: #62626d;
+    --color-lab-line: #e4e4e8;
+    --color-lab-rule: #c9c9d1;
+    --color-lab-accent: #c2410c;
 }
 
 @layer base {
