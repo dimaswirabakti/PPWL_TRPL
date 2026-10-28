@@ -4,14 +4,15 @@
             dwb<span class="text-zinc-400">.portfolio</span>
         </a>
 
-        <div class="flex items-center gap-1 text-sm">
+        <div class="flex flex-wrap items-center justify-end gap-1 text-sm">
             @php
             $links = [
-                'home' => 'Home',
-                'about' => 'About',
-                'education' => 'Education',
-                'projects.index' => 'Projects',
-                'pertemuan8.index' => 'Lab 08',
+            'home' => 'Home',
+            'about' => 'About',
+            'education' => 'Education',
+            'projects.index' => 'Projects',
+            'pertemuan8.index' => 'Lab 08',
+            'pertemuan9.index' => 'Lab 09',
             ];
             @endphp
 
@@ -26,6 +27,24 @@
                 {{ $label }}
             </a>
             @endforeach
+
+            {{-- Login untuk tamu, Logout (POST + @csrf) untuk user yang sudah login. --}}
+            @auth
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"
+                    class="rounded-md px-3 py-1.5 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900">
+                    Logout
+                </button>
+            </form>
+            @endauth
+
+            @guest
+            <a href="{{ route('login') }}"
+                class="rounded-md px-3 py-1.5 transition {{ request()->routeIs('login') ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
+                Login
+            </a>
+            @endguest
         </div>
     </div>
 </nav>
