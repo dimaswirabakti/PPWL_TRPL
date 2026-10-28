@@ -20,12 +20,13 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // Password wajib di-hash, kalau tidak login gagal
-        // updateOrCreate: aman dijalankan berulang, email tidak diduplikasi
-        User::updateOrCreate(
-            ['email' => 'admin@example.com'],
-            ['name' => 'Admin', 'password' => Hash::make('password123')],
-        );
+        User::firstOrNew(['email' => 'admin@example.com'])
+            ->forceFill([
+                'name' => 'Admin',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+            ])
+            ->save();
 
         $this->call([
             ProjectSeeder::class,

@@ -20,7 +20,7 @@
         @php
         $guards = [
         ['auth', 'Sudah login.'],
-        ['admin', 'Email akun adalah ' . auth()->user()->email . '.'],
+        ['admin', 'Role akun adalah ' . auth()->user()->role . '.'],
         ];
         @endphp
 

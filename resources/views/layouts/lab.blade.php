@@ -12,9 +12,9 @@
 
     <header class="border-b border-lab-line">
         <div class="mx-auto flex h-14 w-full max-w-4xl items-center justify-between px-6">
-            <a href="{{ route('home') }}" class="text-sm font-semibold tracking-tight">dwb</a>
+            <a href="{{ route('home') }}" class="shrink-0 text-sm font-semibold tracking-tight">dwb</a>
 
-            <nav class="flex items-center gap-4 text-sm sm:gap-6">
+            <nav class="flex items-center gap-3 whitespace-nowrap text-sm sm:gap-6">
                 <a href="{{ route('projects.index') }}" class="py-4 text-lab-muted transition hover:text-lab-ink">
                     Portfolio
                 </a>
@@ -27,9 +27,13 @@
                     Lab 09
                 </a>
 
-                {{-- Tamu melihat "Masuk", user yang login melihat "Keluar".
-                     Logout wajib POST + @csrf, bukan link biasa. --}}
                 @auth
+                {{-- Latihan: nama user yang login, sekaligus tautan ke halaman profil. --}}
+                <a href="{{ route('profile-saya') }}"
+                    class="max-w-20 truncate py-4 sm:max-w-32 {{ request()->routeIs('profile-saya') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
+                    {{ Auth::user()->name }}
+                </a>
+
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="py-4 text-lab-muted transition hover:text-lab-ink">

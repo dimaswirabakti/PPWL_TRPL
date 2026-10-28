@@ -15,6 +15,7 @@ class Pertemuan9Controller extends Controller
         'login',
         'projects.index',
         'projects.trash',
+        'profile-saya',
         'pertemuan9.admin',
     ];
 

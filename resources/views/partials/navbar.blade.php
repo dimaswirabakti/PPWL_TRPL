@@ -30,6 +30,12 @@
 
             {{-- Login untuk tamu, Logout (POST + @csrf) untuk user yang sudah login. --}}
             @auth
+            {{-- Latihan: nama user yang login, sekaligus tautan ke halaman profil. --}}
+            <a href="{{ route('profile-saya') }}"
+                class="max-w-32 truncate rounded-md px-3 py-1.5 transition {{ request()->routeIs('profile-saya') ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
+                {{ Auth::user()->name }}
+            </a>
+
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"

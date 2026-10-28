@@ -16,6 +16,7 @@ Route::get('pertemuan-9', [Pertemuan9Controller::class, 'index'])->name('pertemu
 // Wajib login
 // Semua route projects dikunci, user yang membukanya dialihkan ke /login.
 Route::middleware('auth')->group(function () {
+    Route::get('profile-saya', fn() => view('profile-saya'))->name('profile-saya');
     Route::get('projects/trash', [ProjectController::class, 'trash'])->name('projects.trash');
     Route::patch('projects/{id}/restore', [ProjectController::class, 'restore'])->name('projects.restore');
     Route::delete('projects/{id}/force', [ProjectController::class, 'forceDelete'])->name('projects.force-delete');
