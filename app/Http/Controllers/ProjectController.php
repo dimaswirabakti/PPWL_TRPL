@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -32,12 +34,20 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $this->validatedData($request);
+        $validated = $request->validate([
+            'name'        => 'required|max:255',
+            'category_id' => 'required|exists:categories,id', // pastikan kamu melempar data category ke view create
+            'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:min_width=400,min_height=300',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            // Simpan ke disk 'public'
+            $validated['thumbnail'] = $request->file('thumbnail')->store('projects/thumbnails', 'public');
+        }
 
         Project::create($validated);
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Proyek berhasil ditambahkan.');
+        return redirect()->route('post.projects.index')->with('success', 'Project berhasil ditambahkan.');
     }
 
     public function show(string $id)
@@ -63,13 +73,21 @@ class ProjectController extends Controller
             ->with('success', 'Proyek berhasil diperbarui.');
     }
 
-    public function destroy(string $id)
+    public function destroy(Project $project)
     {
-        $project = Project::findOrFail($id);
-        $project->delete(); // soft delete: mengisi kolom deleted_at
+        // Hapus file fisik thumbnail
+        if ($project->thumbnail) {
+            Storage::disk('public')->delete($project->thumbnail);
+        }
 
-        return redirect()->route('projects.index')
-            ->with('success', 'Proyek dipindahkan ke Trash.');
+        // Hapus semua file fisik gambar gallery (jika ada)
+        foreach ($project->images as $image) {
+            Storage::disk('public')->delete($image->image);
+        }
+
+        $project->delete(); // Karena pakai soft deletes, ini mungkin tidak menghapus baris dari tabel project_images otomatis kecuali kamu atur cascade on soft delete
+
+        return redirect()->route('post.projects.index')->with('success', 'Project dihapus.');
     }
 
     /**
