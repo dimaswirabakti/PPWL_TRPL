@@ -27,7 +27,7 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();          // Auth::attempt(...)
         $request->session()->regenerate(); // cegah session fixation
 
-        return redirect()->intended(route('projects.index', absolute: false));
+        return redirect()->intended(route('projects', absolute: false));
     }
 
     /**
