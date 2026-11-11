@@ -35,15 +35,31 @@
 @forelse ($projects as $project)
 <article class="mb-3 rounded-lg border border-zinc-200 bg-white p-5 transition hover:border-zinc-300">
     <div class="flex items-start justify-between gap-4">
-        <div class="min-w-0">
-            <div class="flex items-center gap-2">
-                <h2 class="truncate font-medium">
-                    <a href="{{ route('projects.show', $project->id) }}" class="hover:underline">{{ $project->title }}</a>
-                </h2>
-                @include('partials.status-badge', ['status' => $project->status])
+        <div class="flex min-w-0 items-start gap-4">
+            {{-- Thumbnail kecil, atau kotak netral bila belum ada gambar --}}
+            @if ($project->thumbnail_url)
+            <img src="{{ $project->thumbnail_url }}" alt="Thumbnail {{ $project->title }}"
+                class="aspect-[4/3] w-20 shrink-0 rounded-md border border-zinc-200 object-cover">
+            @else
+            <div class="flex aspect-[4/3] w-20 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-zinc-100 text-center text-[10px] leading-tight text-zinc-400">
+                Tanpa gambar
             </div>
-            <p class="mt-1 line-clamp-2 text-sm text-zinc-500">{{ $project->description }}</p>
-            <p class="mt-2 text-xs text-zinc-400">{{ $project->created_at->format('d M Y') }}</p>
+            @endif
+
+            <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                    <h2 class="truncate font-medium">
+                        <a href="{{ route('projects.show', $project->id) }}" class="hover:underline">{{ $project->title }}</a>
+                    </h2>
+                    @include('partials.status-badge', ['status' => $project->status])
+                </div>
+                <p class="mt-1 line-clamp-2 text-sm text-zinc-500">{{ $project->description }}</p>
+                <p class="mt-2 text-xs text-zinc-400">
+                    {{ $project->category?->name ?? 'Tanpa kategori' }}
+                    &middot; {{ $project->images_count }} gambar
+                    &middot; {{ $project->created_at->format('d M Y') }}
+                </p>
+            </div>
         </div>
 
         <div class="flex shrink-0 items-center gap-3 text-sm">
