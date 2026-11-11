@@ -20,8 +20,10 @@
     {{-- ================= ANGKA RINGKASAN ================= --}}
     {{-- Titik dua pada :value artinya isinya variabel PHP, bukan teks biasa. --}}
     <section class="mt-16" aria-label="Ringkasan data">
-        <dl class="grid grid-cols-2 gap-x-8 gap-y-8 border-t-[3px] border-double border-lab-ink pt-6 md:grid-cols-4">
+        <dl class="grid grid-cols-2 gap-x-8 gap-y-8 border-t-[3px] border-double border-lab-ink pt-6 md:grid-cols-3">
             <x-stat-card label="Projects" :value="$totalProjects" color="text-lab-accent" />
+            <x-stat-card label="Published" :value="$publishedProjects" />
+            <x-stat-card label="Draft" :value="$draftProjects" />
             <x-stat-card label="Categories" :value="$totalCategories" />
             <x-stat-card label="Technologies" :value="$totalTechnologies" />
             <x-stat-card label="Skills" :value="$totalSkills" />
@@ -63,5 +65,44 @@
             @endforelse
         </ul>
     </section>
+
+    {{-- ================= LATIHAN: SKILL TERATAS & PER KATEGORI ================= --}}
+    <div class="mt-16 grid grid-cols-1 gap-x-12 gap-y-16 md:grid-cols-2">
+        <section aria-labelledby="skill-teratas">
+            <div class="flex items-baseline justify-between gap-4">
+                <h2 id="skill-teratas" class="text-sm font-medium">Skill teratas</h2>
+                <a href="{{ route('skills.index') }}" class="text-sm text-lab-muted transition hover:text-lab-ink">
+                    Semua skill &rarr;
+                </a>
+            </div>
+
+            <ol class="mt-6 border-t border-lab-rule">
+                @forelse ($topSkills as $skill)
+                    <li class="grid grid-cols-[1.5rem_minmax(0,1fr)_auto] items-baseline gap-x-4 border-b border-lab-line py-3">
+                        <span class="text-right text-sm tabular-nums text-lab-muted">{{ $loop->iteration }}</span>
+                        <span class="truncate text-sm font-medium">{{ $skill->name }}</span>
+                        <span class="text-sm tabular-nums text-lab-muted">{{ $skill->projects_count }} project</span>
+                    </li>
+                @empty
+                    <li class="border-b border-lab-line py-6 text-sm text-lab-muted">Belum ada skill.</li>
+                @endforelse
+            </ol>
+        </section>
+
+        <section aria-labelledby="per-kategori">
+            <h2 id="per-kategori" class="text-sm font-medium">Project per kategori</h2>
+
+            <ul class="mt-6 border-t border-lab-rule">
+                @forelse ($categories as $category)
+                    <li class="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-4 border-b border-lab-line py-3">
+                        <span class="truncate text-sm font-medium">{{ $category->name }}</span>
+                        <span class="text-sm tabular-nums text-lab-muted">{{ $category->projects_count }} project</span>
+                    </li>
+                @empty
+                    <li class="border-b border-lab-line py-6 text-sm text-lab-muted">Belum ada kategori.</li>
+                @endforelse
+            </ul>
+        </section>
+    </div>
 
 @endsection
