@@ -19,4 +19,6 @@
         <a href="{{ route('projects.show', $project->id) }}" class="text-sm text-zinc-600 hover:text-zinc-900">Batal</a>
     </div>
 </form>
+
+@include('projects.partials.gallery-manager')
 @endsection

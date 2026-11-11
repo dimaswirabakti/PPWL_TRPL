@@ -11,6 +11,7 @@
             'about' => 'About',
             'education' => 'Education',
             'projects.index' => 'Projects',
+            'portfolio.index' => 'Portfolio',
             'pertemuan8.index' => 'Lab 08',
             'pertemuan9.index' => 'Lab 09',
             ];
@@ -18,9 +19,11 @@
 
             @foreach ($links as $route => $label)
             @php
-            $active = $route === 'projects.index'
-            ? request()->routeIs('projects.*')
-            : request()->routeIs($route);
+            $active = match ($route) {
+            'projects.index' => request()->routeIs('projects.*'),
+            'portfolio.index' => request()->routeIs('portfolio.*'),
+            default => request()->routeIs($route),
+            };
             @endphp
             <a href="{{ route($route) }}"
                 class="rounded-md px-3 py-1.5 transition {{ $active ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900' }}">
