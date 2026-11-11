@@ -6,6 +6,7 @@ use App\Http\Controllers\Pertemuan9Controller;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectGalleryController;
+use App\Http\Controllers\SkillController;
 use Illuminate\Support\Facades\Route;
 
 // Publik
@@ -35,6 +36,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('projects/{project}/images/{image}', [ProjectGalleryController::class, 'destroy'])->name('projects.images.destroy');
 
     Route::resource('projects', ProjectController::class);
+
+    // Pertemuan 10: kelola nama skill
+    Route::get('skills', [SkillController::class, 'index'])->name('skills.index');
+    Route::get('skills/{skill}/edit', [SkillController::class, 'edit'])->name('skills.edit');
+    Route::put('skills/{skill}', [SkillController::class, 'update'])->name('skills.update');
 });
 
 // Login + admin

@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Project;
 use App\Models\ProjectImage;
+use App\Models\Skill;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class ProjectSeeder extends Seeder
@@ -16,6 +18,7 @@ class ProjectSeeder extends Seeder
     public function run(): void
     {
         Schema::withoutForeignKeyConstraints(function () {
+            DB::table('project_skill')->truncate();
             ProjectImage::truncate();
             Project::truncate();
         });
@@ -26,18 +29,21 @@ class ProjectSeeder extends Seeder
                 'description' => 'Aplikasi mobile untuk pemetaan sampah laut berbasis laporan warga, lengkap dengan peta sebaran dan statistik per wilayah.',
                 'status' => 'published',
                 'category' => 'Mobile',
+                'skills' => ['Desain Antarmuka', 'Desain Basis Data', 'Pengujian Perangkat Lunak'],
             ],
             [
                 'title' => 'Website Reservasi Kos (KosKita)',
                 'description' => 'Website untuk mencari dan memesan kos dengan filter harga, fasilitas, serta jarak ke kampus.',
                 'status' => 'published',
                 'category' => 'Web',
+                'skills' => ['Pemrograman Web', 'Desain Basis Data', 'Version Control'],
             ],
             [
                 'title' => 'Katalog Film (Movix)',
                 'description' => 'Katalog film sederhana dengan fitur pencarian judul, filter genre, dan halaman detail setiap film.',
                 'status' => 'draft',
                 'category' => 'Web',
+                'skills' => ['Pemrograman Web', 'Desain Antarmuka'],
             ],
         ];
 
@@ -55,6 +61,9 @@ class ProjectSeeder extends Seeder
             $project->created_at = now()->subDays($index);
             $project->updated_at = now()->subDays($index);
             $project->save();
+
+            // 2-3 skill yang relevan dengan project ini
+            $project->skills()->sync(Skill::whereIn('name', $attributes['skills'])->pluck('id'));
         }
     }
 }

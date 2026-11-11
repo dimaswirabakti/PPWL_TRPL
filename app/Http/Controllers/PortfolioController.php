@@ -27,7 +27,7 @@ class PortfolioController extends Controller
     {
         abort_if($project->status !== 'published', 404);
 
-        $project->load(['category', 'images']);
+        $project->load(['category', 'images', 'skills']);
 
         return view('portfolio.show', compact('project'));
     }

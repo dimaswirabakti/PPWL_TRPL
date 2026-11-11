@@ -29,6 +29,16 @@
 
     <div class="mt-4 whitespace-pre-line text-sm leading-relaxed text-zinc-700">{{ $project->description }}</div>
 
+    {{-- Skill project (many-to-many) --}}
+    <div class="mt-4 flex flex-wrap items-center gap-1.5">
+        <span class="text-xs text-zinc-400">Skill:</span>
+        @forelse ($project->skills as $skill)
+        <span class="rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-xs text-zinc-600">{{ $skill->name }}</span>
+        @empty
+        <span class="text-xs text-zinc-500">Belum ada skill.</span>
+        @endforelse
+    </div>
+
     @include('projects.partials.gallery-readonly')
 
     <div class="mt-6 flex items-center gap-3 border-t border-zinc-100 pt-4 text-sm">

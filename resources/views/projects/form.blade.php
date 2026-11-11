@@ -67,3 +67,22 @@
     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
     @enderror
 </div>
+
+<fieldset>
+    <legend class="mb-1.5 block text-sm font-medium text-zinc-700">Skill</legend>
+    @php($selectedSkills = array_map('intval', (array) old('skills', $project?->skills->pluck('id')->all() ?? [])))
+    <div class="flex flex-wrap gap-x-5 gap-y-2">
+        @forelse ($skills as $skill)
+        <label class="inline-flex items-center gap-2 text-sm text-zinc-700">
+            <input type="checkbox" name="skills[]" value="{{ $skill->id }}" @checked(in_array($skill->id, $selectedSkills, true))
+                class="size-4 accent-zinc-900">
+            {{ $skill->name }}
+        </label>
+        @empty
+        <p class="text-sm text-zinc-500">Belum ada skill.</p>
+        @endforelse
+    </div>
+    @if ($errors->has('skills') || $errors->has('skills.*'))
+    <p class="mt-1.5 text-xs text-red-600">{{ $errors->first('skills') ?: $errors->first('skills.*') }}</p>
+    @endif
+</fieldset>
