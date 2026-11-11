@@ -41,6 +41,10 @@
                     class="py-2 {{ request()->routeIs('pertemuan9.*') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
                     Lab 09
                 </a>
+                <a href="{{ route('pertemuan-10') }}"
+                    class="py-2 {{ request()->routeIs('pertemuan-10') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
+                    Lab 10
+                </a>
 
                 {{-- Pertemuan 9: tamu melihat "Masuk", user yang login melihat "Keluar".
                      Logout wajib POST + @csrf, bukan link biasa. --}}
