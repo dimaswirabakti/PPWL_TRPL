@@ -14,7 +14,7 @@
         <div class="mx-auto flex min-h-14 w-full max-w-4xl flex-wrap items-center justify-between gap-x-6 px-6">
             <a href="{{ route('home') }}" class="shrink-0 py-2 text-sm font-semibold tracking-tight">dwb</a>
 
-            <nav class="flex flex-wrap items-center justify-end gap-x-4 whitespace-nowrap text-sm sm:gap-x-6">
+            <nav class="flex flex-wrap items-center justify-end gap-x-3 whitespace-nowrap text-sm sm:gap-x-6">
                 {{-- Pertemuan 10: Portfolio mengarah ke halaman publik (hanya project published). --}}
                 <a href="{{ route('portfolio.index') }}"
                     class="py-2 {{ request()->routeIs('portfolio.*') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
@@ -44,6 +44,10 @@
                 <a href="{{ route('pertemuan-10') }}"
                     class="py-2 {{ request()->routeIs('pertemuan-10') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
                     Lab 10
+                </a>
+                <a href="{{ route('pertemuan-11') }}"
+                    class="py-2 {{ request()->routeIs('pertemuan-11') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
+                    Lab 11
                 </a>
 
                 {{-- Pertemuan 9: tamu melihat "Masuk", user yang login melihat "Keluar".

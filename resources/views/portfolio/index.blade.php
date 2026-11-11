@@ -23,7 +23,7 @@
 {{-- Method GET: nilai filter tampil di URL sehingga bisa dibagikan dan dibawa pagination. --}}
 <section class="mt-16" aria-label="Pencarian dan filter">
     <form method="GET" action="{{ route('portfolio.index') }}"
-        class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_9rem_9rem_9rem_auto]">
+        class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_10rem_10rem_10rem_auto]">
         <div class="sm:col-span-2 lg:col-span-1">
             <label for="search" class="sr-only">Cari project</label>
             <input id="search" type="search" name="search" value="{{ $search }}"

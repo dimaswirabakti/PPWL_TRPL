@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Pertemuan10Controller;
+use App\Http\Controllers\Pertemuan11Controller;
 use App\Http\Controllers\Pertemuan8Controller;
 use App\Http\Controllers\Pertemuan9Controller;
 use App\Http\Controllers\PortfolioController;
@@ -18,6 +19,7 @@ Route::get('/education', fn () => view('education'))->name('education');
 Route::get('pertemuan-8', [Pertemuan8Controller::class, 'index'])->name('pertemuan8.index');
 Route::get('pertemuan-9', [Pertemuan9Controller::class, 'index'])->name('pertemuan9.index');
 Route::get('pertemuan-10', [Pertemuan10Controller::class, 'index'])->name('pertemuan-10');
+Route::get('pertemuan-11', [Pertemuan11Controller::class, 'index'])->name('pertemuan-11');
 
 // Pertemuan 10: portfolio publik, hanya project published
 // Pertemuan 11: daftar mendukung search/filter/sort, detail memakai slug (bukan ID)

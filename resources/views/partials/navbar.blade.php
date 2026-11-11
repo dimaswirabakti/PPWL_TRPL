@@ -15,6 +15,7 @@
             'pertemuan8.index' => 'Lab 08',
             'pertemuan9.index' => 'Lab 09',
             'pertemuan-10' => 'Pertemuan 10',
+            'pertemuan-11' => 'Pertemuan 11',
             ];
             @endphp
 
