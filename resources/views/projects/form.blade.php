@@ -31,3 +31,39 @@
     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
     @enderror
 </div>
+
+<div>
+    <label for="category_id" class="mb-1.5 block text-sm font-medium text-zinc-700">Kategori</label>
+    <select id="category_id" name="category_id"
+        class="block w-full rounded-md border bg-white px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-zinc-900/10 {{ $errors->has('category_id') ? 'border-red-400' : 'border-zinc-300 focus:border-zinc-400' }}">
+        <option value="">Tanpa kategori</option>
+        @foreach ($categories as $category)
+        <option value="{{ $category->id }}" @selected((string) old('category_id', $project->category_id ?? '') === (string) $category->id)>{{ $category->name }}</option>
+        @endforeach
+    </select>
+    @error('category_id')
+    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label for="thumbnail" class="mb-1.5 block text-sm font-medium text-zinc-700">Thumbnail</label>
+
+    {{-- Pratinjau thumbnail yang tersimpan (hanya saat edit) --}}
+    @if ($project?->thumbnail_url)
+    <img src="{{ $project->thumbnail_url }}" alt="Thumbnail {{ $project->title }}"
+        class="mb-3 aspect-[4/3] w-40 rounded-md border border-zinc-200 object-cover">
+    @endif
+
+    <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg,image/png,image/webp"
+        class="block w-full text-sm text-zinc-600 file:mr-3 file:rounded-md file:border file:border-zinc-300 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-zinc-700 hover:file:bg-zinc-50">
+    <p class="mt-1.5 text-xs text-zinc-400">
+        JPG, PNG, atau WEBP. Maksimal 2 MB, minimal 400 x 300 piksel.
+        @if ($project?->thumbnail)
+        Kosongkan jika tidak ingin mengganti.
+        @endif
+    </p>
+    @error('thumbnail')
+    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>

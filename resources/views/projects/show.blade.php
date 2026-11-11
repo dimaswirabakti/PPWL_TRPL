@@ -8,11 +8,24 @@
 </div>
 
 <article class="rounded-lg border border-zinc-200 bg-white p-6">
+    {{-- Thumbnail besar, atau kotak netral bila belum ada gambar --}}
+    @if ($project->thumbnail_url)
+    <img src="{{ $project->thumbnail_url }}" alt="Thumbnail {{ $project->title }}"
+        class="mb-5 aspect-[16/9] w-full rounded-md border border-zinc-200 object-cover">
+    @else
+    <div class="mb-5 flex aspect-[16/9] w-full items-center justify-center rounded-md border border-zinc-200 bg-zinc-100 text-sm text-zinc-400">
+        Tanpa gambar
+    </div>
+    @endif
+
     <div class="flex flex-wrap items-center gap-2.5">
         <h1 class="text-2xl font-semibold tracking-tight">{{ $project->title }}</h1>
         @include('partials.status-badge', ['status' => $project->status])
     </div>
-    <p class="mt-1 text-xs text-zinc-400">Dibuat {{ $project->created_at->format('d M Y') }}</p>
+    <p class="mt-1 text-xs text-zinc-400">
+        {{ $project->category?->name ?? 'Tanpa kategori' }}
+        &middot; Dibuat {{ $project->created_at->format('d M Y') }}
+    </p>
 
     <div class="mt-4 whitespace-pre-line text-sm leading-relaxed text-zinc-700">{{ $project->description }}</div>
 
