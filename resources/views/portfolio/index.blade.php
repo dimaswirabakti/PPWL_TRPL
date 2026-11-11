@@ -2,6 +2,10 @@
 
 @section('title', 'Portfolio')
 
+@php
+    $fieldClass = 'h-11 w-full min-w-0 rounded-md border border-lab-rule bg-lab-surface px-3.5 text-sm text-lab-ink placeholder:text-lab-muted focus-visible:outline-2 focus-visible:outline-lab-accent';
+@endphp
+
 @section('content')
 
 {{-- ================= JUDUL ================= --}}
@@ -15,19 +19,53 @@
     </p>
 </header>
 
+{{-- ================= PENCARIAN, FILTER, URUTAN ================= --}}
+{{-- Method GET: nilai filter tampil di URL sehingga bisa dibagikan dan dibawa pagination. --}}
+<section class="mt-16" aria-label="Pencarian dan filter">
+    <form method="GET" action="{{ route('portfolio.index') }}"
+        class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_10rem_10rem_auto]">
+        <div class="sm:col-span-2 lg:col-span-1">
+            <label for="search" class="sr-only">Cari project</label>
+            <input id="search" type="search" name="search" value="{{ $search }}"
+                placeholder="Cari judul atau deskripsi" class="{{ $fieldClass }}">
+        </div>
+
+        <div>
+            <label for="category" class="sr-only">Kategori</label>
+            <select id="category" name="category" class="{{ $fieldClass }}">
+                <option value="">Semua kategori</option>
+                @foreach ($categories as $option)
+                <option value="{{ $option->slug }}" @selected($category === $option->slug)>{{ $option->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label for="sort" class="sr-only">Urutan</label>
+            <select id="sort" name="sort" class="{{ $fieldClass }}">
+                @foreach ($sortOptions as $value => $label)
+                <option value="{{ $value }}" @selected($sort === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit"
+            class="h-11 shrink-0 rounded-md bg-lab-ink px-5 text-sm font-medium text-lab-bg transition hover:bg-lab-ink/85 sm:col-span-2 lg:col-span-1">
+            Cari
+        </button>
+    </form>
+</section>
+
 {{-- ================= DAFTAR PROJECT ================= --}}
-<section class="mt-16" aria-label="Daftar project">
+<section class="mt-10" aria-label="Daftar project">
     <div class="flex items-baseline justify-between gap-4 border-t-[3px] border-double border-lab-ink pt-6">
         <h2 class="text-sm font-medium">Semua project</h2>
-        <span class="text-sm tabular-nums text-lab-muted">{{ $projects->count() }} project</span>
+        <span class="text-sm tabular-nums text-lab-muted">{{ $projects->total() }} project</span>
     </div>
 
-    @if ($projects->isEmpty())
-    <p class="mt-6 border-y border-lab-line py-6 text-sm text-lab-muted">Belum ada project yang dipublikasikan.</p>
-    @else
     <ul class="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-        @foreach ($projects as $project)
-        <li>
+        @forelse ($projects as $project)
+        <li class="min-w-0">
             <a href="{{ route('portfolio.show', $project) }}" class="group block">
                 @if ($project->thumbnail_url)
                 <img src="{{ $project->thumbnail_url }}" alt="Thumbnail {{ $project->title }}" loading="lazy"
@@ -41,12 +79,26 @@
                 <h3 class="mt-3 text-base font-medium leading-snug underline-offset-4 group-hover:underline group-hover:decoration-lab-accent group-hover:decoration-2">
                     {{ $project->title }}
                 </h3>
-                <p class="mt-1 text-xs text-lab-muted">{{ $project->category?->name ?? 'Tanpa kategori' }}</p>
             </a>
+            <p class="mt-1 text-xs text-lab-muted">{{ $project->category?->name ?? 'Tanpa kategori' }}</p>
+            <p class="mt-2 text-sm leading-relaxed text-lab-muted">
+                {{ $project->short_description ?: Str::limit($project->description, 120) }}
+            </p>
+            @if ($project->technologies->isNotEmpty())
+            <p class="mt-2 font-lab-mono text-xs text-lab-muted">
+                {{ $project->technologies->sortBy('name')->pluck('name')->join(' / ') }}
+            </p>
+            @endif
         </li>
-        @endforeach
+        @empty
+        <li class="col-span-full border-y border-lab-line py-6 text-sm text-lab-muted">Tidak ada project yang cocok.</li>
+        @endforelse
     </ul>
-    @endif
+
+    {{-- Pagination minimalis Lab (sama dengan Pertemuan 8) --}}
+    <div class="mt-12">
+        {{ $projects->links('vendor.pagination.lab') }}
+    </div>
 </section>
 
 @endsection

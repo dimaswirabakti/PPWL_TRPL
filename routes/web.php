@@ -20,8 +20,9 @@ Route::get('pertemuan-9', [Pertemuan9Controller::class, 'index'])->name('pertemu
 Route::get('pertemuan-10', [Pertemuan10Controller::class, 'index'])->name('pertemuan-10');
 
 // Pertemuan 10: portfolio publik, hanya project published
+// Pertemuan 11: daftar mendukung search/filter/sort, detail memakai slug (bukan ID)
 Route::get('portfolio', [PortfolioController::class, 'index'])->name('portfolio.index');
-Route::get('portfolio/{project}', [PortfolioController::class, 'show'])->name('portfolio.show');
+Route::get('portfolio/{project:slug}', [PortfolioController::class, 'show'])->name('portfolio.show');
 
 // Wajib login
 // Semua route projects dikunci, user yang membukanya dialihkan ke /login.
