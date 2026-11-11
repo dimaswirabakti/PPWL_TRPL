@@ -50,14 +50,14 @@ class ProjectController extends Controller
 
     public function show(string $id): View
     {
-        $project = Project::with('category')->findOrFail($id);
+        $project = Project::with(['category', 'images'])->findOrFail($id);
 
         return view('projects.show', compact('project'));
     }
 
     public function edit(string $id): View
     {
-        $project = Project::findOrFail($id);
+        $project = Project::with('images')->findOrFail($id);
         $categories = Category::orderBy('name')->get();
 
         return view('projects.edit', compact('project', 'categories'));

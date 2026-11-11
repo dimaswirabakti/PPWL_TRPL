@@ -29,6 +29,8 @@
 
     <div class="mt-4 whitespace-pre-line text-sm leading-relaxed text-zinc-700">{{ $project->description }}</div>
 
+    @include('projects.partials.gallery-readonly')
+
     <div class="mt-6 flex items-center gap-3 border-t border-zinc-100 pt-4 text-sm">
         <a href="{{ route('projects.edit', $project->id) }}"
             class="rounded-md border border-zinc-300 px-3 py-1.5 font-medium text-zinc-700 transition hover:bg-zinc-50">Edit</a>

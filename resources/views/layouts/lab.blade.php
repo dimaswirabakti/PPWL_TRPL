@@ -15,7 +15,9 @@
             <a href="{{ route('home') }}" class="shrink-0 py-2 text-sm font-semibold tracking-tight">dwb</a>
 
             <nav class="flex flex-wrap items-center justify-end gap-x-4 whitespace-nowrap text-sm sm:gap-x-6">
-                <a href="{{ route('projects.index') }}" class="py-2 text-lab-muted transition hover:text-lab-ink">
+                {{-- Pertemuan 10: Portfolio mengarah ke halaman publik (hanya project published). --}}
+                <a href="{{ route('portfolio.index') }}"
+                    class="py-2 {{ request()->routeIs('portfolio.*') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
                     Portfolio
                 </a>
 
