@@ -14,7 +14,30 @@ class Project extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['title', 'description', 'status', 'category_id', 'thumbnail'];
+    protected $fillable = [
+        'title',
+        'slug',
+        'short_description',
+        'description',
+        'status',
+        'category_id',
+        'thumbnail',
+        'project_date',
+        'is_featured',
+        'project_url',
+        'repository_url',
+    ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'project_date' => 'date',
+            'is_featured' => 'boolean',
+        ];
+    }
 
     /**
      * Local scope: hanya ambil proyek berstatus 'published'.
@@ -44,6 +67,15 @@ class Project extends Model
     public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class)->orderBy('name');
+    }
+
+    /**
+     * Technology yang dipakai project ini (tabel pivot project_technology).
+     * Tanpa orderBy di sini; urutkan saat ditampilkan.
+     */
+    public function technologies(): BelongsToMany
+    {
+        return $this->belongsToMany(Technology::class);
     }
 
     /**
