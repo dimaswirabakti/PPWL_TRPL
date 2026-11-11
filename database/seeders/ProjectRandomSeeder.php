@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Project;
 use Illuminate\Database\Seeder;
+use App\Models\Category;
 
 class ProjectRandomSeeder extends Seeder
 {
@@ -43,11 +44,14 @@ class ProjectRandomSeeder extends Seeder
 
     public function run(): void
     {
+        $categoryIds = Category::pluck('id');
+
         foreach ($this->judulAcak() as $index => $judul) {
             $project = new Project;
             $project->title = $judul;
             $project->description = $this->deskripsi($judul);
             $project->status = random_int(1, 10) <= 7 ? 'published' : 'draft';
+            $project->category_id = $categoryIds->random();
 
             $project->created_at = now()->subDays($index + 4)->subHours(random_int(0, 23));
             $project->updated_at = $project->created_at;

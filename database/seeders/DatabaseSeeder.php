@@ -29,6 +29,9 @@ class DatabaseSeeder extends Seeder
             ->save();
 
         $this->call([
+            CategorySeeder::class,
+            SkillSeeder::class,
+            TechnologySeeder::class,
             ProjectSeeder::class,
             ProjectRandomSeeder::class,
         ]);
