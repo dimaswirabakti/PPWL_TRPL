@@ -29,7 +29,7 @@ class ProjectSeeder extends Seeder
         $projects = [
             [
                 'title' => 'Aplikasi Pemetaan Sampah Laut (Cleanesia)',
-                'short_description' => 'Aplikasi mobile untuk memetakan sampah laut dari laporan warga.',
+                'short_description' => 'Aplikasi mobile untuk memetakan sampah laut dari laporan warga, dengan API Laravel.',
                 'description' => 'Aplikasi mobile untuk pemetaan sampah laut berbasis laporan warga, lengkap dengan peta sebaran dan statistik per wilayah.',
                 'status' => 'published',
                 'category' => 'Mobile',
@@ -42,7 +42,7 @@ class ProjectSeeder extends Seeder
             ],
             [
                 'title' => 'Website Reservasi Kos (KosKita)',
-                'short_description' => 'Website pencarian dan pemesanan kos di sekitar kampus.',
+                'short_description' => 'Website pencarian dan pemesanan kos di sekitar kampus berbasis Laravel.',
                 'description' => 'Website untuk mencari dan memesan kos dengan filter harga, fasilitas, serta jarak ke kampus.',
                 'status' => 'published',
                 'category' => 'Web',

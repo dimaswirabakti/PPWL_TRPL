@@ -14,10 +14,22 @@
     </a>
 </div>
 
+{{-- Latihan P11: pencarian (GET). Filter status dibawa lewat hidden input. --}}
+<form method="GET" action="{{ route('projects.index') }}" class="mb-4 flex gap-2">
+    @if ($filter)
+    <input type="hidden" name="filter" value="{{ $filter }}">
+    @endif
+    <label for="search" class="sr-only">Cari proyek</label>
+    <input type="search" id="search" name="search" value="{{ $search }}" placeholder="Cari judul atau deskripsi"
+        class="block w-full min-w-0 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-zinc-400 focus:ring-2 focus:ring-zinc-900/10">
+    <button type="submit" class="shrink-0 rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700">Cari</button>
+</form>
+
 <div class="mb-6 flex items-center justify-between gap-4 border-b border-zinc-200 pb-3">
     <div class="flex items-center gap-1 text-sm">
         @foreach (['' => 'Semua', 'published' => 'Published', 'draft' => 'Draft'] as $value => $label)
-        <a href="{{ $value ? route('projects.index', ['filter' => $value]) : route('projects.index') }}"
+        {{-- Tab status membawa kata kunci pencarian yang sedang aktif --}}
+        <a href="{{ route('projects.index', array_filter(['filter' => $value, 'search' => $search])) }}"
             class="rounded-md px-3 py-1.5 transition {{ (string) $filter === $value ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:bg-zinc-100' }}">
             {{ $label }}
         </a>
@@ -30,6 +42,13 @@
         <span class="ml-0.5 rounded bg-zinc-200 px-1.5 py-0.5 text-xs text-zinc-600">{{ $trashedCount }}</span>
         @endif
     </a>
+</div>
+
+<div class="mb-3 flex items-center justify-between gap-4 text-sm text-zinc-500">
+    <span class="tabular-nums">{{ $projects->total() }} hasil ditemukan</span>
+    @if ($search !== '' || $filter)
+    <a href="{{ route('projects.index') }}" class="text-zinc-600 hover:text-zinc-900 hover:underline">Reset</a>
+    @endif
 </div>
 
 @forelse ($projects as $project)
@@ -75,10 +94,15 @@
 </article>
 @empty
 <div class="rounded-lg border border-dashed border-zinc-300 bg-white p-10 text-center">
-    <p class="text-sm text-zinc-500">Tidak ada proyek pada filter ini.</p>
+    <p class="text-sm text-zinc-500">{{ $search !== '' ? 'Tidak ada proyek yang cocok dengan pencarian ini.' : 'Tidak ada proyek pada filter ini.' }}</p>
     <a href="{{ route('projects.create') }}" class="mt-3 inline-block text-sm font-medium text-zinc-900 hover:underline">
         Tambah proyek baru &rarr;
     </a>
 </div>
 @endforelse
+
+{{-- Pagination bawaan Laravel (Tailwind) --}}
+<div class="mt-6">
+    {{ $projects->links() }}
+</div>
 @endsection

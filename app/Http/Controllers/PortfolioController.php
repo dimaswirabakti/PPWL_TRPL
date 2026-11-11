@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Project;
+use App\Models\Technology;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,6 +16,7 @@ class PortfolioController extends Controller
         'terbaru' => 'Terbaru',
         'terlama' => 'Terlama',
         'judul' => 'Judul A-Z',
+        'tanggal' => 'Tanggal project',
     ];
 
     // Alias lama yang tetap diterima
@@ -24,12 +26,13 @@ class PortfolioController extends Controller
 
     /**
      * Halaman publik: hanya project berstatus published.
-     * Mendukung ?search=, ?category=slug, ?sort=, dan ?page=.
+     * Mendukung ?search=, ?category=slug, ?technology=slug, ?sort=, dan ?page=.
      */
     public function index(Request $request): View
     {
         $search = $this->queryText($request, 'search');
         $category = $this->queryText($request, 'category');
+        $technology = $this->queryText($request, 'technology');
         $sort = $this->normalizeSort($request->query('sort'));
 
         $projects = Project::published()
@@ -48,16 +51,34 @@ class PortfolioController extends Controller
             ->when($request->filled('category'), function (Builder $query) use ($category) {
                 $query->whereHas('category', fn (Builder $categoryQuery) => $categoryQuery->where('slug', $category));
             })
+            // Latihan: filter technology, bisa digabung dengan search dan category
+            ->when($request->filled('technology'), function (Builder $query) use ($technology) {
+                $query->whereHas('technologies', fn (Builder $technologyQuery) => $technologyQuery->where('slug', $technology));
+            })
             ->tap(fn (Builder $query) => $this->applySort($query, $sort))
             ->paginate(self::PER_PAGE)
-            // search, category, dan sort ikut terbawa ke link halaman berikutnya
+            // search, category, technology, dan sort ikut terbawa ke link halaman berikutnya
             ->withQueryString();
 
         $categories = Category::orderBy('name')->get();
+        $technologies = Technology::orderBy('name')->get();
         $sortOptions = self::SORT_OPTIONS;
 
-        // $search dan $category dikirim ke view agar nilai lama tetap tampil di form
-        return view('portfolio.index', compact('projects', 'categories', 'search', 'category', 'sort', 'sortOptions'));
+        // Tombol Reset hanya muncul jika ada filter yang sedang aktif
+        $hasActiveFilter = $search !== '' || $category !== '' || $technology !== '';
+
+        // Nilai filter dikirim ke view agar nilai lama tetap tampil di form
+        return view('portfolio.index', compact(
+            'projects',
+            'categories',
+            'technologies',
+            'search',
+            'category',
+            'technology',
+            'sort',
+            'sortOptions',
+            'hasActiveFilter',
+        ));
     }
 
     /**
@@ -102,6 +123,11 @@ class PortfolioController extends Controller
         match ($sort) {
             'terlama' => $query->oldest()->orderBy('id'),
             'judul' => $query->orderBy('title')->orderBy('id'),
+            // Latihan: tanggal project terbaru dulu, baris tanpa tanggal di akhir
+            'tanggal' => $query->orderByRaw('project_date IS NULL')
+                ->orderByDesc('project_date')
+                ->latest()
+                ->orderByDesc('id'),
             default => $query->latest()->orderByDesc('id'),
         };
     }

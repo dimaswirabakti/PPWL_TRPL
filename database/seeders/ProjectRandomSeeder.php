@@ -49,7 +49,7 @@ class ProjectRandomSeeder extends Seeder
     {
         $categoryIds = Category::pluck('id');
         $skillIds = Skill::pluck('id');
-        $technologyIds = Technology::pluck('id');
+        $technologies = Technology::pluck('name', 'id');
 
         // Slug yang sudah dipakai (misalnya oleh ProjectSeeder), termasuk yang soft-deleted
         $usedSlugs = Project::withTrashed()->pluck('slug')->filter()->all();
@@ -58,10 +58,13 @@ class ProjectRandomSeeder extends Seeder
             $slug = $this->slugUnik($judul, $usedSlugs);
             $usedSlugs[] = $slug;
 
+            // 1-3 technology acak, dipilih dulu agar namanya bisa masuk deskripsi singkat
+            $pickedTechnologies = $technologies->random(min(random_int(1, 3), $technologies->count()), preserveKeys: true);
+
             $project = new Project;
             $project->title = $judul;
             $project->slug = $slug;
-            $project->short_description = $this->deskripsiSingkat($judul);
+            $project->short_description = $this->deskripsiSingkat($judul, $pickedTechnologies->values()->all());
             $project->description = $this->deskripsi($judul);
             $project->status = random_int(1, 10) <= 7 ? 'published' : 'draft';
             $project->category_id = $categoryIds->random();
@@ -83,8 +86,7 @@ class ProjectRandomSeeder extends Seeder
             // 1-3 skill acak
             $project->skills()->sync($skillIds->random(min(random_int(1, 3), $skillIds->count())));
 
-            // 1-3 technology acak
-            $project->technologies()->sync($technologyIds->random(min(random_int(1, 3), $technologyIds->count())));
+            $project->technologies()->sync($pickedTechnologies->keys());
         }
     }
 
@@ -124,11 +126,17 @@ class ProjectRandomSeeder extends Seeder
         return array_slice($kombinasi, 0, self::JUMLAH);
     }
 
-    private function deskripsiSingkat(string $judul): string
+    /**
+     * Satu kalimat. Nama technology ikut disebut agar pencarian seperti "laravel" punya hasil.
+     *
+     * @param  list<string>  $namaTechnology
+     */
+    private function deskripsiSingkat(string $judul, array $namaTechnology): string
     {
         $fokus = self::FOKUS[array_rand(self::FOKUS)];
+        $daftar = collect($namaTechnology)->join(', ', ' dan ');
 
-        return "{$judul} dengan {$fokus}.";
+        return "{$judul} dengan {$fokus}, dibangun memakai {$daftar}.";
     }
 
     private function deskripsi(string $judul): string

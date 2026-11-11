@@ -18,6 +18,7 @@ class ProjectController extends Controller
     public function index(Request $request): View
     {
         $filter = $request->query('filter'); // '', 'published', atau 'draft'
+        $search = is_string($request->query('search')) ? trim($request->query('search')) : '';
 
         // with() + withCount() mencegah N+1 saat menampilkan kategori dan jumlah gambar
         $query = Project::query()->with('category')->withCount('images');
@@ -28,10 +29,22 @@ class ProjectController extends Controller
             $query->where('status', 'draft');
         }
 
-        $projects = $query->latest()->get();
+        // Latihan P11: pencarian, semua orWhere dibungkus satu grup agar filter status tetap berlaku
+        if ($search !== '') {
+            $keyword = addcslashes($search, '%_\\');
+
+            $query->where(function ($group) use ($keyword) {
+                $group->where('title', 'like', "%{$keyword}%")
+                    ->orWhere('short_description', 'like', "%{$keyword}%")
+                    ->orWhere('description', 'like', "%{$keyword}%");
+            });
+        }
+
+        // withQueryString() membawa filter dan search ke link halaman berikutnya
+        $projects = $query->latest()->orderByDesc('id')->paginate(10)->withQueryString();
         $trashedCount = Project::onlyTrashed()->count();
 
-        return view('projects.index', compact('projects', 'filter', 'trashedCount'));
+        return view('projects.index', compact('projects', 'filter', 'search', 'trashedCount'));
     }
 
     public function create(): View
