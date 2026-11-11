@@ -27,6 +27,10 @@
                         class="py-2 {{ request()->routeIs('dashboard') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
                         Dashboard
                     </a>
+                    <a href="{{ route('skills.index') }}"
+                        class="py-2 {{ request()->routeIs('skills.*') ? 'font-medium text-lab-ink' : 'text-lab-muted transition hover:text-lab-ink' }}">
+                        Skill
+                    </a>
                 @endauth
 
                 <a href="{{ route('pertemuan8.index') }}"

@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Project;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use App\Models\Project;
+use App\Models\Skill;
+use Illuminate\Database\Seeder;
 
 class ProjectRandomSeeder extends Seeder
 {
@@ -45,6 +46,7 @@ class ProjectRandomSeeder extends Seeder
     public function run(): void
     {
         $categoryIds = Category::pluck('id');
+        $skillIds = Skill::pluck('id');
 
         foreach ($this->judulAcak() as $index => $judul) {
             $project = new Project;
@@ -56,6 +58,9 @@ class ProjectRandomSeeder extends Seeder
             $project->created_at = now()->subDays($index + 4)->subHours(random_int(0, 23));
             $project->updated_at = $project->created_at;
             $project->save();
+
+            // 1-3 skill acak
+            $project->skills()->sync($skillIds->random(min(random_int(1, 3), $skillIds->count())));
         }
     }
 

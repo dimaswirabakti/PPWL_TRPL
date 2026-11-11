@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Project;
+use App\Models\Skill;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -33,16 +34,18 @@ class ProjectController extends Controller
     public function create(): View
     {
         $categories = Category::orderBy('name')->get();
+        $skills = Skill::orderBy('name')->get();
 
-        return view('projects.create', compact('categories'));
+        return view('projects.create', compact('categories', 'skills'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validatedData($request);
-        $validated = $this->withUploadedThumbnail($request, $validated);
+        $validated = $this->prepareProjectAttributes($request, $validated);
 
-        Project::create($validated);
+        $project = Project::create($validated);
+        $project->skills()->sync($request->input('skills', []));
 
         return redirect()->route('projects.index')
             ->with('success', 'Proyek berhasil ditambahkan.');
@@ -50,17 +53,18 @@ class ProjectController extends Controller
 
     public function show(string $id): View
     {
-        $project = Project::with(['category', 'images'])->findOrFail($id);
+        $project = Project::with(['category', 'images', 'skills'])->findOrFail($id);
 
         return view('projects.show', compact('project'));
     }
 
     public function edit(string $id): View
     {
-        $project = Project::with('images')->findOrFail($id);
+        $project = Project::with(['images', 'skills'])->findOrFail($id);
         $categories = Category::orderBy('name')->get();
+        $skills = Skill::orderBy('name')->get();
 
-        return view('projects.edit', compact('project', 'categories'));
+        return view('projects.edit', compact('project', 'categories', 'skills'));
     }
 
     public function update(Request $request, string $id): RedirectResponse
@@ -70,8 +74,9 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $oldThumbnail = $project->thumbnail;
 
-        $validated = $this->withUploadedThumbnail($request, $validated);
+        $validated = $this->prepareProjectAttributes($request, $validated);
         $project->update($validated);
+        $project->skills()->sync($request->input('skills', []));
 
         // File lama baru dihapus SETELAH file baru tersimpan dan data diperbarui
         if (isset($validated['thumbnail']) && $oldThumbnail && $oldThumbnail !== $validated['thumbnail']) {
@@ -146,6 +151,8 @@ class ProjectController extends Controller
             'status' => 'required|in:draft,published',
             'category_id' => 'nullable|exists:categories,id',
             'thumbnail' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:min_width=400,min_height=300',
+            'skills' => 'nullable|array',
+            'skills.*' => 'exists:skills,id',
         ], [
             'title.required' => 'Judul wajib diisi.',
             'title.min' => 'Judul minimal 5 karakter.',
@@ -159,19 +166,22 @@ class ProjectController extends Controller
             'thumbnail.mimes' => 'Thumbnail harus berformat jpg, jpeg, png, atau webp.',
             'thumbnail.max' => 'Ukuran thumbnail maksimal 2 MB.',
             'thumbnail.dimensions' => 'Thumbnail minimal berukuran 400 x 300 piksel.',
+            'skills.array' => 'Format pilihan skill tidak valid.',
+            'skills.*.exists' => 'Skill yang dipilih tidak ditemukan.',
         ]);
     }
 
     /**
      * Ganti objek UploadedFile dengan string path hasil simpan.
      * Jika tidak ada file, key thumbnail dibuang agar thumbnail lama tidak terhapus.
+     * Key skills juga dibuang karena disimpan lewat sync(), bukan kolom tabel projects.
      *
      * @param  array<string, mixed>  $validated
      * @return array<string, mixed>
      */
-    private function withUploadedThumbnail(Request $request, array $validated): array
+    private function prepareProjectAttributes(Request $request, array $validated): array
     {
-        unset($validated['thumbnail']);
+        unset($validated['thumbnail'], $validated['skills']);
 
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');

@@ -15,6 +15,18 @@
     <div class="mt-6 whitespace-pre-line text-base leading-relaxed text-lab-muted">{{ $project->description }}</div>
 </header>
 
+{{-- ================= SKILL ================= --}}
+@if ($project->skills->isNotEmpty())
+<section class="mt-10" aria-labelledby="skill">
+    <h2 id="skill" class="text-sm font-medium">Skill</h2>
+    <ul class="mt-3 flex flex-wrap gap-x-6 gap-y-1 border-t border-lab-rule pt-3 text-sm text-lab-muted">
+        @foreach ($project->skills as $skill)
+        <li>{{ $skill->name }}</li>
+        @endforeach
+    </ul>
+</section>
+@endif
+
 {{-- ================= GALERI ================= --}}
 <section class="mt-16" aria-labelledby="galeri">
     <div class="flex items-baseline justify-between gap-4 border-t-[3px] border-double border-lab-ink pt-6">
