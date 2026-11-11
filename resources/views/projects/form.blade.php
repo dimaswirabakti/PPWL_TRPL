@@ -11,6 +11,17 @@
 </div>
 
 <div>
+    <label for="short_description" class="mb-1.5 block text-sm font-medium text-zinc-700">Deskripsi singkat <span class="font-normal text-zinc-400">(opsional)</span></label>
+    <input type="text" id="short_description" name="short_description" maxlength="255"
+        value="{{ old('short_description', $project->short_description ?? '') }}"
+        class="block w-full rounded-md border bg-white px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-zinc-900/10 {{ $errors->has('short_description') ? 'border-red-400' : 'border-zinc-300 focus:border-zinc-400' }}">
+    <p class="mt-1.5 text-xs text-zinc-400">Satu kalimat untuk kartu di halaman portfolio.</p>
+    @error('short_description')
+    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
     <label for="description" class="mb-1.5 block text-sm font-medium text-zinc-700">Deskripsi</label>
     <textarea id="description" name="description" rows="6"
         class="block w-full rounded-md border bg-white px-3 py-2 text-sm leading-relaxed outline-none transition focus:ring-2 focus:ring-zinc-900/10 {{ $errors->has('description') ? 'border-red-400' : 'border-zinc-300 focus:border-zinc-400' }}">{{ old('description', $project->description ?? '') }}</textarea>
@@ -44,6 +55,46 @@
     @error('category_id')
     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
     @enderror
+</div>
+
+<div>
+    <label for="project_date" class="mb-1.5 block text-sm font-medium text-zinc-700">Tanggal project <span class="font-normal text-zinc-400">(opsional)</span></label>
+    <input type="date" id="project_date" name="project_date"
+        value="{{ old('project_date', $project?->project_date?->format('Y-m-d')) }}"
+        class="block w-full rounded-md border bg-white px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-zinc-900/10 {{ $errors->has('project_date') ? 'border-red-400' : 'border-zinc-300 focus:border-zinc-400' }}">
+    @error('project_date')
+    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label for="project_url" class="mb-1.5 block text-sm font-medium text-zinc-700">URL demo <span class="font-normal text-zinc-400">(opsional)</span></label>
+    <input type="url" id="project_url" name="project_url" placeholder="https://"
+        value="{{ old('project_url', $project->project_url ?? '') }}"
+        class="block w-full rounded-md border bg-white px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-zinc-900/10 {{ $errors->has('project_url') ? 'border-red-400' : 'border-zinc-300 focus:border-zinc-400' }}">
+    @error('project_url')
+    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    <label for="repository_url" class="mb-1.5 block text-sm font-medium text-zinc-700">URL repositori <span class="font-normal text-zinc-400">(opsional)</span></label>
+    <input type="url" id="repository_url" name="repository_url" placeholder="https://"
+        value="{{ old('repository_url', $project->repository_url ?? '') }}"
+        class="block w-full rounded-md border bg-white px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-zinc-900/10 {{ $errors->has('repository_url') ? 'border-red-400' : 'border-zinc-300 focus:border-zinc-400' }}">
+    @error('repository_url')
+    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+    @enderror
+</div>
+
+<div>
+    {{-- Checkbox tidak dicentang tidak terkirim; controller membacanya dengan $request->boolean().
+         Setelah validasi gagal, pakai nilai old() agar centang yang dilepas tidak muncul lagi. --}}
+    <label class="inline-flex items-center gap-2 text-sm font-medium text-zinc-700">
+        <input type="checkbox" name="is_featured" value="1" @checked(session()->hasOldInput() ? old('is_featured') : ($project->is_featured ?? false))
+            class="size-4 accent-zinc-900">
+        Project unggulan
+    </label>
 </div>
 
 <div>
@@ -84,5 +135,24 @@
     </div>
     @if ($errors->has('skills') || $errors->has('skills.*'))
     <p class="mt-1.5 text-xs text-red-600">{{ $errors->first('skills') ?: $errors->first('skills.*') }}</p>
+    @endif
+</fieldset>
+
+<fieldset>
+    <legend class="mb-1.5 block text-sm font-medium text-zinc-700">Technology</legend>
+    @php($selectedTechnologies = array_map('intval', (array) old('technologies', $project?->technologies->pluck('id')->all() ?? [])))
+    <div class="flex flex-wrap gap-x-5 gap-y-2">
+        @forelse ($technologies as $technology)
+        <label class="inline-flex items-center gap-2 text-sm text-zinc-700">
+            <input type="checkbox" name="technologies[]" value="{{ $technology->id }}" @checked(in_array($technology->id, $selectedTechnologies, true))
+                class="size-4 accent-zinc-900">
+            {{ $technology->name }}
+        </label>
+        @empty
+        <p class="text-sm text-zinc-500">Belum ada technology.</p>
+        @endforelse
+    </div>
+    @if ($errors->has('technologies') || $errors->has('technologies.*'))
+    <p class="mt-1.5 text-xs text-red-600">{{ $errors->first('technologies') ?: $errors->first('technologies.*') }}</p>
     @endif
 </fieldset>
